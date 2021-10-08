@@ -190,7 +190,7 @@ class slurmMemNode(linefunc):
         if nnodes == 0: return None
         if reqmem.endswith('c'):
             return slurmmem(reqmem) * ncpus / nnodes
-        if reqmem.endswith('n'):
+        else:  # ReqMem is memory per node (for slurm >= v21.08 that is the default)
             return slurmmem(reqmem)
 
 class slurmMemCPU(linefunc):
@@ -205,7 +205,7 @@ class slurmMemCPU(linefunc):
         if ncpus == 0:  return None
         if reqmem.endswith('c'):
             return slurmmem(reqmem)
-        if reqmem.endswith('n'):
+        else:   # ReqMem is memory per node (for slurm >= v21.08 that is the default)
             return slurmmem(reqmem) * nnodes / ncpus
 
 class slurmMemType(linefunc):
@@ -216,7 +216,7 @@ class slurmMemType(linefunc):
         if not reqmem: return None
         if reqmem.endswith('n'):  return 'n'
         if reqmem.endswith('c'):  return 'c'
-        raise ValueError("Unknown memory type")
+        return 'n'  # ReqMem is memory per node (for slurm >= v21.08 that is the default)
 
 class slurmMemRaw(linefunc):
     """Raw value of ReqMem column, with 'c' or 'n' suffix"""
